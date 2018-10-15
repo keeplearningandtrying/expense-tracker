@@ -3,9 +3,11 @@ new Vue({
   data: {
     auth: {},
     user: {},
+    credentials: {},
     transactions: [],
     newTxn: {
-      type: 'EXPENSE'
+      type: 'EXPENSE',
+      createdOn: new Date().toJSON().slice(0,10)
     }
   },
   created: function () {
@@ -13,23 +15,29 @@ new Vue({
   },
   methods: {
     checkAuth: function() {
-      this.authenticate('admin', 'admin');
+      if(localStorage.getItem('access_token') != null){
+        this.auth['access_token'] = localStorage.getItem('access_token');
+        this.fetchCurrentUser();
+        this.fetchTransactions();
+      }
     },
-    authenticate: function (username, password) {
+    authenticate: function () {
       $.ajax({
         url: '/api/auth/login',
         type: 'post',
         contentType: 'application/json',
-        data: JSON.stringify({
-          username: username,
-          password: password
-        })
+        data: JSON.stringify(this.credentials)
       })
       .done(function (data) {
         this.auth = data;
+        localStorage.setItem('access_token', this.auth['access_token']);
         this.fetchCurrentUser();
         this.fetchTransactions();
       }.bind(this));
+    },
+    logout: function() {
+      localStorage.removeItem('access_token')
+      window.location = "/"
     },
     fetchCurrentUser: function () {
       $.ajax({
@@ -56,7 +64,7 @@ new Vue({
       }.bind(this));
     },
     createTransaction: function() {
-      this.newTxn.createdOn =
+      console.log(this.newTxn.createdOn);
       $.ajax({
         url: '/api/transactions',
         type: 'post',
@@ -69,6 +77,12 @@ new Vue({
       .done(function (data) {
         this.fetchTransactions();
       }.bind(this));
+    }
+  },
+  computed: {
+    isAuthenticated: function() {
+      console.log('access_token=', this.auth['access_token'])
+      return this.auth['access_token'] != null
     }
   }
 });
