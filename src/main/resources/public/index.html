@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+    <link rel="stylesheet" href="/webjars/bootstrap/4.0.0-2/css/bootstrap.min.css"/>
+    <script defer src="/webjars/font-awesome/5.0.6/svg-with-js/js/fontawesome-all.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0-alpha14/css/tempusdominus-bootstrap-4.min.css" />
+    <link rel="stylesheet" href="/css/styles.css"/>
+    <title>SivaLabs : Expense Tracker</title>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+    <div class="container">
+        <a class="navbar-brand" href="#">Expense Tracker</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse"
+                data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault"
+                aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+    </div>
+</nav>
+
+<main id="app" role="main" class="container">
+    <div fragment="content">
+        <h2>Add Transaction</h2>
+        <form class="form-inline" v-on:submit.prevent="createTransaction()">
+            <div class="form-group mb-2">
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" v-model="newTxn.amount"
+                    placeholder="Amount">
+                </div>
+            </div>
+            <div class="form-group mb-2">
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" id="txnTypeExpense"
+                           v-model="newTxn.type" value="EXPENSE">
+                    <label class="form-check-label" for="txnTypeExpense">EXPENSE</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" id="txnTypeIncome"
+                           v-model="newTxn.type" value="INCOME">
+                    <label class="form-check-label" for="txnTypeIncome">INCOME</label>
+                </div>
+            </div>
+            <div class="form-group mb-2">
+                <div class="input-group date" id="datetimepicker1" data-target-input="nearest">
+                    <input type="text" class="form-control datetimepicker-input" data-target="#datetimepicker1"
+                           v-model="newTxn.createdOn"/>
+                    <div class="input-group-append" data-target="#datetimepicker1" data-toggle="datetimepicker">
+                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group mb-2">
+                <button type="submit" class="btn btn-primary mb-2">Submit</button>
+            </div>
+        </form>
+
+        <h3>Transactions</h3>
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Date</th>
+                <th scope="col">Amount</th>
+                <th scope="col">Type</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr v-for="(txn, index) in transactions">
+                <th scope="row">{{index + 1}}</th>
+                <td>{{txn.createdOn}}</td>
+                <td>{{txn.amount}}</td>
+                <td>{{txn.type}}</td>
+            </tr>
+            </tbody>
+        </table>
+
+
+    </div>
+
+</main><!-- /.container -->
+
+<script src="/webjars/jquery/3.0.0/jquery.min.js"></script>
+<script src="/webjars/popper.js/1.12.9-1/umd/popper.min.js"></script>
+<script src="/webjars/bootstrap/4.0.0-2/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0-alpha14/js/tempusdominus-bootstrap-4.min.js"></script>
+<script src="/webjars/vue/2.5.16/vue.min.js"></script>
+<script src="/js/app.js"></script>
+<script type="text/javascript">
+  $(function () {
+    $('#datetimepicker1').datetimepicker();
+  });
+</script>
+</body>
+</html>
