@@ -18,7 +18,6 @@ new Vue({
       if(localStorage.getItem('access_token') != null){
         this.auth['access_token'] = localStorage.getItem('access_token');
         this.fetchCurrentUser();
-        this.fetchTransactions();
       }
     },
     authenticate: function () {
@@ -32,7 +31,6 @@ new Vue({
         this.auth = data;
         localStorage.setItem('access_token', this.auth['access_token']);
         this.fetchCurrentUser();
-        this.fetchTransactions();
       }.bind(this));
     },
     logout: function() {
@@ -48,7 +46,14 @@ new Vue({
         }
       })
       .done(function (data) {
+        //console.log('me:', data)
         this.user = data;
+        this.fetchTransactions();
+      }.bind(this))
+      .fail(function (jqXHR, textStatus, errorThrown) {
+        if(jqXHR.status == 401) {
+          this.logout()
+        }
       }.bind(this));
     },
     fetchTransactions: function () {
@@ -64,7 +69,9 @@ new Vue({
       }.bind(this));
     },
     createTransaction: function() {
-      console.log(this.newTxn.createdOn);
+      if(this.newTxn.amount == undefined || this.newTxn.amount == '') {
+        return;
+      }
       $.ajax({
         url: '/api/transactions',
         type: 'post',
@@ -75,13 +82,17 @@ new Vue({
         }
       })
       .done(function (data) {
+        this.newTxn = {
+          type: 'EXPENSE',
+          createdOn: new Date().toJSON().slice(0,10)
+        };
         this.fetchTransactions();
       }.bind(this));
     }
   },
   computed: {
     isAuthenticated: function() {
-      console.log('access_token=', this.auth['access_token'])
+      //console.log('access_token=', this.auth)
       return this.auth['access_token'] != null
     }
   }

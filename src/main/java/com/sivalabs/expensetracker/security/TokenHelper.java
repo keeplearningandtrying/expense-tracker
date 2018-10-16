@@ -57,17 +57,6 @@ public class TokenHelper {
         return issueAt;
     }
 
-    public String getAudienceFromToken(String token) {
-        String audience;
-        try {
-            final Claims claims = this.getAllClaimsFromToken(token);
-            audience = claims.getAudience();
-        } catch (Exception e) {
-            audience = null;
-        }
-        return audience;
-    }
-
     public String refreshToken(String token) {
         String refreshedToken;
         Date a = timeProvider.now();
@@ -123,9 +112,8 @@ public class TokenHelper {
         final String username = getUsernameFromToken(token);
         final Date created = getIssuedAtDateFromToken(token);
         return (
-                username != null &&
-                        username.equals(userDetails.getUsername()) &&
-                        !isCreatedBeforeLastPasswordReset(created, securityUser.getUser().getLastPasswordResetDate())
+                username != null && username.equals(userDetails.getUsername()) &&
+                !isCreatedBeforeLastPasswordReset(created, securityUser.getUser().getLastPasswordResetDate())
         );
     }
 
@@ -134,15 +122,10 @@ public class TokenHelper {
     }
 
     public String getToken( HttpServletRequest request ) {
-        /**
-         *  Getting the token from Authentication header
-         *  e.g Bearer your_token
-         */
         String authHeader = getAuthHeaderFromHeader( request );
         if ( authHeader != null && authHeader.startsWith("Bearer ")) {
             return authHeader.substring(7);
         }
-
         return null;
     }
 
