@@ -1,12 +1,17 @@
 package com.sivalabs.expensetracker.web.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sivalabs.expensetracker.config.CurrentUser;
 import com.sivalabs.expensetracker.entity.User;
 import com.sivalabs.expensetracker.service.UserService;
 import com.sivalabs.expensetracker.utils.TestHelper;
+import com.sivalabs.expensetracker.web.CurrentUserInterceptor;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -31,6 +36,12 @@ public class UserControllerTests {
     @MockBean
     UserService userService;
 
+    @MockBean
+    CurrentUserInterceptor currentUserInterceptor;
+
+    @MockBean
+    CurrentUser currentUser;
+
     @Autowired
     private MockMvc mockMvc;
 
@@ -43,6 +54,9 @@ public class UserControllerTests {
         newUser = TestHelper.buildUserWithId();
         existingUser = TestHelper.buildUserWithId();
         updateUser = TestHelper.buildUserWithId();
+
+        given(currentUserInterceptor.preHandle(Mockito.any(HttpServletRequest.class), Mockito.any(
+            HttpServletResponse.class), Mockito.any(Object.class))).willReturn(true);
     }
 
     @Test

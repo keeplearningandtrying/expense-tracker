@@ -16,7 +16,7 @@ public class CurrentUserInterceptor implements HandlerInterceptor {
     CurrentUser currentUser;
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         SecurityUser loginUser = SecurityUtils.getLoginUser();
         if(loginUser != null) {
             currentUser.setId(loginUser.getUser().getId());

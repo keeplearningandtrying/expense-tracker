@@ -27,7 +27,8 @@ public class UserController {
     @GetMapping("")
     public List<User> getUsers() {
         log.info("process=get-users");
-        return userService.getAllUsers();
+        List<User> allUsers = userService.getAllUsers();
+        return allUsers;
     }
 
     @GetMapping("/{id}")
