@@ -5,6 +5,7 @@ jdk: oraclejdk8
 env:
   global:
   - secure: "LSkJ//tcDuO4hlJX2OX+yVMd1nbL27fsDkjzYHa0g8rNePxNsDz/hnppwDuMKst+/i6vREk6O7FOSyHBC+x96bl6nlaD3w3sG6w8mbFwmet2ArtLq9mXB0nlVO+Bxu7GgNUFIlkWUColVAWQrD2uwSXr/XlJ/JopgA8gtNGDpKrP36SttFAo3ErPXFJw7OgVnRH7v4lAlo+Igceyg3ehabHzn9RWXVJQ7QdK0O0D6VmxD/jsyz1lcy3rdDXMeudCvNN7thjafs3zcvNmP6wS2VWVjVPB1X4Fzp7e6t50lxu2pFARdX3L0VTkV9sCiXEWSE1F4cjdgI9959Op0jE2P1YQ9zxT5I8cA9KJzsL+D1+9c7SfRsn4H4K7+ks0kQ7PVOMhAzhYaLpx7mRWQ/51RwiKsMbjbk9qKOiGYUrx1VX9Qo/7HoRpVH7BlrFeHE/AgIRn568Ka2UOP0VUOtwnwQ1F85Vtdo+k6RsSAGVnTHvbAjqN/4i+AQt5P7diuU51iqBronxjDMNewqCHhNkFNp6qxzwnBeGuQb3SOTP7pnj3F40o2APhARasP+ER5YVReg4SpErPIQhIqz1ajhT+bb0ev2emoQB3zkiikjYPVFJ04HXpp+Xv3JXW3V7c4koIHgJ4d8Tm0Vxt9j+iprpWMWgO1DYlOT+mxBZmkDDNBiU="
+  - secure: "Pwu6+7iIhsqsWjgDIiU7Ml1OQKYZfL9X6Pt0qnjeGmlTm3josnAEX8nVcY9SGqFMa4bUf4x+pKIwntQcB5v2vqYO3reIbxmWAOj/1+nE1iMVGxYeQVKuKMuKCjqQqv/zDPMwJx1ff3UQtSe4I7lOw6hfaxFB6fLGOMnifTUP5xof7BIUPgS+uXak6+4p7X2f5FFiRA37BQ9fDqdH+WNo5cYb1iVVRoF56DkNaj9t7uaGhsHH0oy0BI4Svo/qexEuibhB4DVxm7XjsQghhJw+OOCV3/pdLmvL4eNKtMyFCfCMETrj0ayOxH22FlXytqau/QkCQM04gixWBTI8qvLCCWWGsA0RCCTr4rOmO6rZISbUAhbfnR35y8KimdOmKkompqIrLViNs+dcXbz04+mznzcfiqs4peoIgS1yipP2MUXpG+FR42mbenMDMFhjmpw7dGPYLfnTdieS8+cnyhG1EWYaNalC78im+iFFfKISWn7oTFCt2W5zs5Eo0NSHlmg0I7GLvSxUn463V1BP2NBj0pl4cZBxyc0TkMDFa/oeb0/0biN4TwjEFWlDeAM5HMjc9XiH/kY6cLjsCbziavI3N0rJicw2fIxfdC+rHyBhy+ouQFn2d2j6sCiPmLBdFEqgnjJh9Y+cvnKts4uF3cX/jiziZdVeb3QbPD75h8/1UIk="
 
 addons:
   sonarcloud:
@@ -19,3 +20,8 @@ script:
 cache:
   directories:
     - '$HOME/.m2/repository'
+
+deploy:
+  provider: heroku
+  api_key: $HEROKU_API_KEY
+  app: expense-tracker
