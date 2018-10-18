@@ -15,6 +15,10 @@ import java.util.Date;
 @Component
 public class TokenHelper {
 
+    private static final String AUDIENCE_WEB = "web";
+
+    private static final SignatureAlgorithm SIGNATURE_ALGORITHM = SignatureAlgorithm.HS512;
+
     @Value("${spring.application.name}")
     private String appName;
 
@@ -27,12 +31,8 @@ public class TokenHelper {
     @Value("${jwt.header}")
     private String authHeader;
 
-    static final String AUDIENCE_WEB = "web";
-
     @Autowired
     TimeProvider timeProvider;
-
-    private SignatureAlgorithm SIGNATURE_ALGORITHM = SignatureAlgorithm.HS512;
 
     public String getUsernameFromToken(String token) {
         String username;
@@ -115,9 +115,9 @@ public class TokenHelper {
     }
 
     public String getToken( HttpServletRequest request ) {
-        String authHeader = getAuthHeaderFromHeader( request );
-        if ( authHeader != null && authHeader.startsWith("Bearer ")) {
-            return authHeader.substring(7);
+        String authHeaderValue = getAuthHeaderFromHeader( request );
+        if ( authHeaderValue != null && authHeaderValue.startsWith("Bearer ")) {
+            return authHeaderValue.substring(7);
         }
         return null;
     }
