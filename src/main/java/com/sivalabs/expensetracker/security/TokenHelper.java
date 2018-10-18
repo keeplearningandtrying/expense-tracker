@@ -87,16 +87,10 @@ public class TokenHelper {
     }
 
     private Claims getAllClaimsFromToken(String token) {
-        Claims claims;
-        try {
-            claims = Jwts.parser()
-                    .setSigningKey(SECRET)
-                    .parseClaimsJws(token)
-                    .getBody();
-        } catch (Exception e) {
-            claims = null;
-        }
-        return claims;
+      return Jwts.parser()
+            .setSigningKey(SECRET)
+            .parseClaimsJws(token)
+            .getBody();
     }
 
     private Date generateExpirationDate() {
