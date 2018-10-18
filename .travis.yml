@@ -2,8 +2,19 @@ sudo: required
 language: java
 jdk: oraclejdk8
 
+env:
+  global:
+  - secure: "LSkJ//tcDuO4hlJX2OX+yVMd1nbL27fsDkjzYHa0g8rNePxNsDz/hnppwDuMKst+/i6vREk6O7FOSyHBC+x96bl6nlaD3w3sG6w8mbFwmet2ArtLq9mXB0nlVO+Bxu7GgNUFIlkWUColVAWQrD2uwSXr/XlJ/JopgA8gtNGDpKrP36SttFAo3ErPXFJw7OgVnRH7v4lAlo+Igceyg3ehabHzn9RWXVJQ7QdK0O0D6VmxD/jsyz1lcy3rdDXMeudCvNN7thjafs3zcvNmP6wS2VWVjVPB1X4Fzp7e6t50lxu2pFARdX3L0VTkV9sCiXEWSE1F4cjdgI9959Op0jE2P1YQ9zxT5I8cA9KJzsL+D1+9c7SfRsn4H4K7+ks0kQ7PVOMhAzhYaLpx7mRWQ/51RwiKsMbjbk9qKOiGYUrx1VX9Qo/7HoRpVH7BlrFeHE/AgIRn568Ka2UOP0VUOtwnwQ1F85Vtdo+k6RsSAGVnTHvbAjqN/4i+AQt5P7diuU51iqBronxjDMNewqCHhNkFNp6qxzwnBeGuQb3SOTP7pnj3F40o2APhARasP+ER5YVReg4SpErPIQhIqz1ajhT+bb0ev2emoQB3zkiikjYPVFJ04HXpp+Xv3JXW3V7c4koIHgJ4d8Tm0Vxt9j+iprpWMWgO1DYlOT+mxBZmkDDNBiU="
+
+addons:
+  sonarcloud:
+    organization: "sivaprasadreddy-github"
+    token:
+      secure: $SONAR_TOKEN
+
 script:
   - ./mvnw clean verify
+  - ./mvnw sonar:sonar
 
 cache:
   directories:
