@@ -14,7 +14,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -43,8 +42,8 @@ public class AuthenticationController {
     private UserService userService;
 
     @PostMapping(value = "/auth/login")
-    public ResponseEntity<?> createAuthenticationToken(
-            @RequestBody AuthenticationRequest authenticationRequest) throws AuthenticationException {
+    public ResponseEntity<UserTokenState> createAuthenticationToken(
+            @RequestBody AuthenticationRequest authenticationRequest) {
 
         final Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
@@ -62,7 +61,7 @@ public class AuthenticationController {
     }
 
     @PostMapping(value = "/auth/refresh")
-    public ResponseEntity<?> refreshAuthenticationToken(HttpServletRequest request, Principal principal) {
+    public ResponseEntity<UserTokenState> refreshAuthenticationToken(HttpServletRequest request, Principal principal) {
 
         String authToken = tokenHelper.getToken( request );
 
@@ -85,7 +84,7 @@ public class AuthenticationController {
 
     @PostMapping(value = "/change-password")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<?> changePassword(@RequestBody ChangePassword changePassword) {
+    public ResponseEntity changePassword(@RequestBody ChangePassword changePassword) {
         userDetailsService.changePassword(changePassword.getOldPassword(), changePassword.getNewPassword());
         Map<String, String> result = new HashMap<>();
         result.put( "result", "success" );

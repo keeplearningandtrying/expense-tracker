@@ -2,7 +2,6 @@ package com.sivalabs.expensetracker.service;
 
 import com.sivalabs.expensetracker.entity.Transaction;
 import com.sivalabs.expensetracker.repo.TransactionRepository;
-import com.sivalabs.expensetracker.repo.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,12 +13,10 @@ import java.util.Optional;
 @Transactional
 public class TransactionService {
     private final TransactionRepository transactionRepository;
-    private final UserRepository userRepository;
 
     @Autowired
-    public TransactionService(TransactionRepository transactionRepository, UserRepository userRepository) {
+    public TransactionService(TransactionRepository transactionRepository) {
         this.transactionRepository = transactionRepository;
-        this.userRepository = userRepository;
     }
 
     public List<Transaction> getUserTransactions(Long userId) {

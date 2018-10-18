@@ -1,10 +1,10 @@
 package com.sivalabs.expensetracker.security;
 
+import lombok.experimental.UtilityClass;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Component;
 
-@Component
+@UtilityClass
 public class SecurityUtils {
 
     public static SecurityUser getLoginUser()

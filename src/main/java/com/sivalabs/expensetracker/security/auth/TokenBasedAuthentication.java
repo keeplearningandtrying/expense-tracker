@@ -1,8 +1,10 @@
 package com.sivalabs.expensetracker.security.auth;
 
+import lombok.EqualsAndHashCode;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 
+@EqualsAndHashCode
 public class TokenBasedAuthentication extends AbstractAuthenticationToken {
 
     private String token;

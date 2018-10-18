@@ -1,7 +1,6 @@
 package com.sivalabs.expensetracker.security;
 
 import com.sivalabs.expensetracker.config.TimeProvider;
-import com.sivalabs.expensetracker.entity.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -17,16 +16,16 @@ import java.util.Date;
 public class TokenHelper {
 
     @Value("${spring.application.name}")
-    private String APP_NAME;
+    private String appName;
 
     @Value("${jwt.secret}")
-    public String SECRET;
+    public String secret;
 
     @Value("${jwt.expires_in}")
-    private long EXPIRES_IN;
+    private long expiresIn;
 
     @Value("${jwt.header}")
-    private String AUTH_HEADER;
+    private String authHeader;
 
     static final String AUDIENCE_WEB = "web";
 
@@ -66,7 +65,7 @@ public class TokenHelper {
             refreshedToken = Jwts.builder()
                     .setClaims(claims)
                     .setExpiration(generateExpirationDate())
-                    .signWith( SIGNATURE_ALGORITHM, SECRET )
+                    .signWith( SIGNATURE_ALGORITHM, secret)
                     .compact();
         } catch (Exception e) {
             refreshedToken = null;
@@ -77,28 +76,28 @@ public class TokenHelper {
     public String generateToken(String username) {
         String audience = AUDIENCE_WEB;
         return Jwts.builder()
-                .setIssuer( APP_NAME )
+                .setIssuer(appName)
                 .setSubject(username)
                 .setAudience(audience)
                 .setIssuedAt(timeProvider.now())
                 .setExpiration(generateExpirationDate())
-                .signWith( SIGNATURE_ALGORITHM, SECRET )
+                .signWith( SIGNATURE_ALGORITHM, secret)
                 .compact();
     }
 
     private Claims getAllClaimsFromToken(String token) {
       return Jwts.parser()
-            .setSigningKey(SECRET)
+            .setSigningKey(secret)
             .parseClaimsJws(token)
             .getBody();
     }
 
     private Date generateExpirationDate() {
-        return new Date(timeProvider.now().getTime() + EXPIRES_IN * 1000);
+        return new Date(timeProvider.now().getTime() + expiresIn * 1000);
     }
 
     public long getExpiredIn() {
-        return EXPIRES_IN;
+        return expiresIn;
     }
 
     public Boolean validateToken(String token, UserDetails userDetails) {
@@ -124,7 +123,7 @@ public class TokenHelper {
     }
 
     public String getAuthHeaderFromHeader( HttpServletRequest request ) {
-        return request.getHeader(AUTH_HEADER);
+        return request.getHeader(authHeader);
     }
 
 }

@@ -1,10 +1,12 @@
 package com.sivalabs.expensetracker.security;
 
+import lombok.EqualsAndHashCode;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 
 import java.util.stream.Collectors;
 
+@EqualsAndHashCode
 public class SecurityUser extends User {
 
     private final com.sivalabs.expensetracker.entity.User user;
