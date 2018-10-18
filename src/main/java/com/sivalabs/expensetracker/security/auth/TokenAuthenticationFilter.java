@@ -14,36 +14,34 @@ import java.io.IOException;
 
 public class TokenAuthenticationFilter extends OncePerRequestFilter {
 
-    private TokenHelper tokenHelper;
+  private TokenHelper tokenHelper;
 
-    private UserDetailsService userDetailsService;
+  private UserDetailsService userDetailsService;
 
-    public TokenAuthenticationFilter(TokenHelper tokenHelper, UserDetailsService userDetailsService) {
-        this.tokenHelper = tokenHelper;
-        this.userDetailsService = userDetailsService;
-    }
+  public TokenAuthenticationFilter(TokenHelper tokenHelper, UserDetailsService userDetailsService) {
+    this.tokenHelper = tokenHelper;
+    this.userDetailsService = userDetailsService;
+  }
 
-    @Override
-    public void doFilterInternal(
-            HttpServletRequest request,
-            HttpServletResponse response,
-            FilterChain chain
-    ) throws IOException, ServletException {
+  @Override
+  public void doFilterInternal(
+      HttpServletRequest request, HttpServletResponse response, FilterChain chain)
+      throws IOException, ServletException {
 
-        String username;
-        String authToken = tokenHelper.getToken(request);
+    String username;
+    String authToken = tokenHelper.getToken(request);
 
-        if (authToken != null) {
-            username = tokenHelper.getUsernameFromToken(authToken);
-            if (username != null) {
-                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-                if (tokenHelper.validateToken(authToken, userDetails)) {
-                    TokenBasedAuthentication authentication = new TokenBasedAuthentication(authToken, userDetails);
-                    SecurityContextHolder.getContext().setAuthentication(authentication);
-                }
-            }
+    if (authToken != null) {
+      username = tokenHelper.getUsernameFromToken(authToken);
+      if (username != null) {
+        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+        if (tokenHelper.validateToken(authToken, userDetails)) {
+          TokenBasedAuthentication authentication =
+              new TokenBasedAuthentication(authToken, userDetails);
+          SecurityContextHolder.getContext().setAuthentication(authentication);
         }
-        chain.doFilter(request, response);
+      }
     }
-
+    chain.doFilter(request, response);
+  }
 }

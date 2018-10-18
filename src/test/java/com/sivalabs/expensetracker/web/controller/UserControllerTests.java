@@ -6,8 +6,6 @@ import com.sivalabs.expensetracker.entity.User;
 import com.sivalabs.expensetracker.service.UserService;
 import com.sivalabs.expensetracker.utils.TestHelper;
 import com.sivalabs.expensetracker.web.CurrentUserInterceptor;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,13 +17,20 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.Arrays;
 import java.util.Optional;
 
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -33,91 +38,88 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(controllers = UserController.class, secure = false)
 public class UserControllerTests {
 
-    @MockBean
-    UserService userService;
+  @MockBean UserService userService;
 
-    @MockBean
-    CurrentUserInterceptor currentUserInterceptor;
+  @MockBean CurrentUserInterceptor currentUserInterceptor;
 
-    @MockBean
-    CurrentUser currentUser;
+  @MockBean CurrentUser currentUser;
 
-    @Autowired
-    private MockMvc mockMvc;
+  ObjectMapper objectMapper = new ObjectMapper();
 
-    ObjectMapper objectMapper = new ObjectMapper();
+  User existingUser, newUser, updateUser;
 
-    User existingUser, newUser, updateUser;
+  @Autowired private MockMvc mockMvc;
 
-    @Before
-    public void setUp() {
-        newUser = TestHelper.buildUserWithId();
-        existingUser = TestHelper.buildUserWithId();
-        updateUser = TestHelper.buildUserWithId();
+  @Before
+  public void setUp() {
+    newUser = TestHelper.buildUserWithId();
+    existingUser = TestHelper.buildUserWithId();
+    updateUser = TestHelper.buildUserWithId();
 
-        given(currentUserInterceptor.preHandle(Mockito.any(HttpServletRequest.class), Mockito.any(
-            HttpServletResponse.class), Mockito.any(Object.class))).willReturn(true);
-    }
+    given(
+            currentUserInterceptor.preHandle(
+                Mockito.any(HttpServletRequest.class),
+                Mockito.any(HttpServletResponse.class),
+                Mockito.any(Object.class)))
+        .willReturn(true);
+  }
 
-    @Test
-    public void should_get_all_users() throws Exception {
-        given(userService.getAllUsers()).willReturn(Arrays.asList(existingUser, updateUser));
+  @Test
+  public void should_get_all_users() throws Exception {
+    given(userService.getAllUsers()).willReturn(Arrays.asList(existingUser, updateUser));
 
-        this.mockMvc
-                .perform(get("/api/users"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(2)));
-    }
+    this.mockMvc
+        .perform(get("/api/users"))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$", hasSize(2)));
+  }
 
-    @Test
-    public void should_get_user_by_id() throws Exception {
-        given(userService.getUserById(existingUser.getId())).willReturn(Optional.of(existingUser));
+  @Test
+  public void should_get_user_by_id() throws Exception {
+    given(userService.getUserById(existingUser.getId())).willReturn(Optional.of(existingUser));
 
-        this.mockMvc
-                .perform(get("/api/users/"+existingUser.getId()))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id", is(existingUser.getId())))
-                .andExpect(jsonPath("$.name", is(existingUser.getName())))
-                .andExpect(jsonPath("$.email", is(existingUser.getEmail())));
-    }
+    this.mockMvc
+        .perform(get("/api/users/" + existingUser.getId()))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.id", is(existingUser.getId())))
+        .andExpect(jsonPath("$.name", is(existingUser.getName())))
+        .andExpect(jsonPath("$.email", is(existingUser.getEmail())));
+  }
 
-    @Test
-    public void should_create_user() throws Exception {
-        given(userService.createUser(newUser)).willReturn(newUser);
+  @Test
+  public void should_create_user() throws Exception {
+    given(userService.createUser(newUser)).willReturn(newUser);
 
-        this.mockMvc
-                .perform(post("/api/users/")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(newUser))
-                )
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.id", notNullValue()))
-                .andExpect(jsonPath("$.name", is(newUser.getName())))
-                .andExpect(jsonPath("$.email", is(newUser.getEmail())));
-    }
+    this.mockMvc
+        .perform(
+            post("/api/users/")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(newUser)))
+        .andExpect(status().isCreated())
+        .andExpect(jsonPath("$.id", notNullValue()))
+        .andExpect(jsonPath("$.name", is(newUser.getName())))
+        .andExpect(jsonPath("$.email", is(newUser.getEmail())));
+  }
 
-    @Test
-    public void should_update_user() throws Exception {
-        given(userService.updateUser(existingUser)).willReturn(existingUser);
+  @Test
+  public void should_update_user() throws Exception {
+    given(userService.updateUser(existingUser)).willReturn(existingUser);
 
-        this.mockMvc
-                .perform(put("/api/users/"+existingUser.getId())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(existingUser))
-                )
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id", is(existingUser.getId())))
-                .andExpect(jsonPath("$.name", is(existingUser.getName())))
-                .andExpect(jsonPath("$.email", is( existingUser.getEmail())));
-    }
+    this.mockMvc
+        .perform(
+            put("/api/users/" + existingUser.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(existingUser)))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.id", is(existingUser.getId())))
+        .andExpect(jsonPath("$.name", is(existingUser.getName())))
+        .andExpect(jsonPath("$.email", is(existingUser.getEmail())));
+  }
 
-    @Test
-    public void should_delete_user() throws Exception {
-        doNothing().when(userService).deleteUser(existingUser.getId());
+  @Test
+  public void should_delete_user() throws Exception {
+    doNothing().when(userService).deleteUser(existingUser.getId());
 
-        this.mockMvc
-                .perform(delete("/api/users/"+existingUser.getId()))
-                .andExpect(status().isOk());
-    }
-
+    this.mockMvc.perform(delete("/api/users/" + existingUser.getId())).andExpect(status().isOk());
+  }
 }

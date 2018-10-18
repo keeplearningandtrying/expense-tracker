@@ -7,14 +7,13 @@ import org.springframework.security.core.context.SecurityContextHolder;
 @UtilityClass
 public class SecurityUtils {
 
-    public static SecurityUser getLoginUser()
-    {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if(authentication != null && authentication.getPrincipal()!= null &&
-                authentication.getPrincipal() instanceof SecurityUser)
-        {
-            return (SecurityUser) authentication.getPrincipal();
-        }
-        return null;
+  public static SecurityUser getLoginUser() {
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    if (authentication != null
+        && authentication.getPrincipal() != null
+        && authentication.getPrincipal() instanceof SecurityUser) {
+      return (SecurityUser) authentication.getPrincipal();
     }
+    return null;
+  }
 }

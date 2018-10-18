@@ -12,34 +12,34 @@ import java.util.Optional;
 @Service
 @Transactional
 public class UserService {
-    private final UserRepository userRepository;
+  private final UserRepository userRepository;
 
-    @Autowired
-    public UserService(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
+  @Autowired
+  public UserService(UserRepository userRepository) {
+    this.userRepository = userRepository;
+  }
 
-    public Optional<User> getUserById(Long id) {
-        return userRepository.findById(id);
-    }
+  public Optional<User> getUserById(Long id) {
+    return userRepository.findById(id);
+  }
 
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
-    }
+  public List<User> getAllUsers() {
+    return userRepository.findAll();
+  }
 
-    public User createUser(User user) {
-        return userRepository.save(user);
-    }
+  public User createUser(User user) {
+    return userRepository.save(user);
+  }
 
-    public User updateUser(User user) {
-        return userRepository.save(user);
-    }
+  public User updateUser(User user) {
+    return userRepository.save(user);
+  }
 
-    public void deleteUser(Long userId) {
-        userRepository.deleteById(userId);
-    }
+  public void deleteUser(Long userId) {
+    userRepository.deleteById(userId);
+  }
 
-    public User findByUsername(String username) {
-        return userRepository.findByUsername(username);
-    }
+  public User findByUsername(String username) {
+    return userRepository.findByUsername(username);
+  }
 }

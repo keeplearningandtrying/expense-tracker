@@ -12,15 +12,15 @@ import javax.servlet.http.HttpServletResponse;
 
 @Component
 public class CurrentUserInterceptor implements HandlerInterceptor {
-    @Autowired
-    CurrentUser currentUser;
+  @Autowired CurrentUser currentUser;
 
-    @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-        SecurityUser loginUser = SecurityUtils.getLoginUser();
-        if(loginUser != null) {
-            currentUser.setId(loginUser.getUser().getId());
-        }
-        return true;
+  @Override
+  public boolean preHandle(
+      HttpServletRequest request, HttpServletResponse response, Object handler) {
+    SecurityUser loginUser = SecurityUtils.getLoginUser();
+    if (loginUser != null) {
+      currentUser.setId(loginUser.getUser().getId());
     }
+    return true;
+  }
 }

@@ -25,56 +25,52 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+  @Autowired TokenHelper tokenHelper;
 
-    @Autowired
-    private CustomUserDetailsService jwtUserDetailsService;
+  @Autowired private CustomUserDetailsService jwtUserDetailsService;
 
-    @Autowired
-    private RestAuthenticationEntryPoint restAuthenticationEntryPoint;
+  @Autowired private RestAuthenticationEntryPoint restAuthenticationEntryPoint;
 
-    @Autowired
-    TokenHelper tokenHelper;
+  @Bean
+  public PasswordEncoder passwordEncoder() {
+    return new BCryptPasswordEncoder();
+  }
 
-    @Bean
-    @Override
-    public AuthenticationManager authenticationManagerBean() throws Exception {
-        return super.authenticationManagerBean();
-    }
+  @Bean
+  @Override
+  public AuthenticationManager authenticationManagerBean() throws Exception {
+    return super.authenticationManagerBean();
+  }
 
-    @Autowired
-    public void configureGlobal( AuthenticationManagerBuilder auth ) throws Exception {
-        auth.userDetailsService( jwtUserDetailsService )
-            .passwordEncoder( passwordEncoder() );
-    }
+  @Autowired
+  public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+    auth.userDetailsService(jwtUserDetailsService).passwordEncoder(passwordEncoder());
+  }
 
+  @Override
+  protected void configure(HttpSecurity http) throws Exception {
+    http.sessionManagement()
+        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+        .and()
+        .exceptionHandling()
+        .authenticationEntryPoint(restAuthenticationEntryPoint)
+        .and()
+        .authorizeRequests()
+        .antMatchers("/auth/**")
+        .permitAll()
+        // .antMatchers(HttpMethod.POST,"/users").hasAnyRole("USER", "ADMIN")
+        // .anyRequest().authenticated()
+        .and()
+        .addFilterBefore(
+            new TokenAuthenticationFilter(tokenHelper, jwtUserDetailsService),
+            BasicAuthenticationFilter.class);
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http
-            .sessionManagement().sessionCreationPolicy( SessionCreationPolicy.STATELESS ).and()
-            .exceptionHandling().authenticationEntryPoint( restAuthenticationEntryPoint ).and()
-            .authorizeRequests()
-            .antMatchers("/auth/**").permitAll()
-            //.antMatchers(HttpMethod.POST,"/users").hasAnyRole("USER", "ADMIN")
-            //.anyRequest().authenticated()
-            .and()
-            .addFilterBefore(new TokenAuthenticationFilter(tokenHelper, jwtUserDetailsService), BasicAuthenticationFilter.class);
+    http.csrf().disable();
+  }
 
-        http.csrf().disable();
-    }
-
-
-    @Override
-    public void configure(WebSecurity web) {
-        // TokenAuthenticationFilter will ignore the below paths
-        web.ignoring().antMatchers(
-                HttpMethod.POST,
-                "/auth/login"
-        );
-
-    }
+  @Override
+  public void configure(WebSecurity web) {
+    // TokenAuthenticationFilter will ignore the below paths
+    web.ignoring().antMatchers(HttpMethod.POST, "/auth/login");
+  }
 }

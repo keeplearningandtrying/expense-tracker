@@ -1,16 +1,11 @@
 package com.sivalabs.expensetracker.web.controller;
 
-import static org.springframework.http.HttpStatus.CREATED;
-
 import com.sivalabs.expensetracker.config.CurrentUser;
 import com.sivalabs.expensetracker.entity.Transaction;
 import com.sivalabs.expensetracker.entity.User;
 import com.sivalabs.expensetracker.model.TransactionDTO;
 import com.sivalabs.expensetracker.security.SecurityUtils;
 import com.sivalabs.expensetracker.service.TransactionService;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -25,15 +20,21 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import static org.springframework.http.HttpStatus.CREATED;
+
 @RestController
 @RequestMapping("/api/transactions")
 @Slf4j
 @PreAuthorize("isAuthenticated()")
 public class TransactionController {
 
-  @Autowired private CurrentUser currentUser;
-
   private final TransactionService transactionService;
+
+  @Autowired private CurrentUser currentUser;
 
   @Autowired
   public TransactionController(TransactionService transactionService) {

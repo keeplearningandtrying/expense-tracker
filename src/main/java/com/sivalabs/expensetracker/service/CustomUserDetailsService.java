@@ -1,8 +1,8 @@
 package com.sivalabs.expensetracker.service;
 
 import com.sivalabs.expensetracker.entity.User;
-import com.sivalabs.expensetracker.security.SecurityUser;
 import com.sivalabs.expensetracker.repo.UserRepository;
+import com.sivalabs.expensetracker.security.SecurityUser;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -19,38 +19,36 @@ import org.springframework.stereotype.Service;
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
 
-    @Autowired
-    private UserRepository userRepository;
+  @Autowired private UserRepository userRepository;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+  @Autowired private PasswordEncoder passwordEncoder;
 
-    @Autowired
-    private AuthenticationManager authenticationManager;
+  @Autowired private AuthenticationManager authenticationManager;
 
-    @Override
-    public UserDetails loadUserByUsername(String username) {
-        User user = userRepository.findByUsername(username);
-        if (user == null) {
-            throw new UsernameNotFoundException(String.format("No user found with username '%s'.", username));
-        } else {
-            return new SecurityUser(user);
-        }
+  @Override
+  public UserDetails loadUserByUsername(String username) {
+    User user = userRepository.findByUsername(username);
+    if (user == null) {
+      throw new UsernameNotFoundException(
+          String.format("No user found with username '%s'.", username));
+    } else {
+      return new SecurityUser(user);
     }
+  }
 
-    public void changePassword(String oldPassword, String newPassword) {
+  public void changePassword(String oldPassword, String newPassword) {
 
-        Authentication currentUser = SecurityContextHolder.getContext().getAuthentication();
-        String username = currentUser.getName();
+    Authentication currentUser = SecurityContextHolder.getContext().getAuthentication();
+    String username = currentUser.getName();
 
-        log.debug("Re-authenticating user '"+ username + "' for password change request.");
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, oldPassword));
+    log.debug("Re-authenticating user '" + username + "' for password change request.");
+    authenticationManager.authenticate(
+        new UsernamePasswordAuthenticationToken(username, oldPassword));
 
-        log.debug("Changing password for user '"+ username + "'");
+    log.debug("Changing password for user '" + username + "'");
 
-        User user = (User) loadUserByUsername(username);
-        user.setPassword(passwordEncoder.encode(newPassword));
-        userRepository.save(user);
-
-    }
+    User user = (User) loadUserByUsername(username);
+    user.setPassword(passwordEncoder.encode(newPassword));
+    userRepository.save(user);
+  }
 }
