@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 @EqualsAndHashCode
 public class SecurityUser extends User {
 
-  private com.sivalabs.expensetracker.entity.User user;
+  private transient com.sivalabs.expensetracker.entity.User user;
 
   public SecurityUser(com.sivalabs.expensetracker.entity.User user) {
     super(
