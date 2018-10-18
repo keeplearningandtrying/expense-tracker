@@ -24,4 +24,4 @@ cache:
 deploy:
   provider: heroku
   api_key: $HEROKU_API_KEY
-  app: expense-tracker
+  app: sivalabs-expense-tracker
