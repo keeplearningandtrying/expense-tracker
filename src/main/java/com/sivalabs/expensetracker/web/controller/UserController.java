@@ -1,7 +1,6 @@
 package com.sivalabs.expensetracker.web.controller;
 
 import com.sivalabs.expensetracker.entity.User;
-import com.sivalabs.expensetracker.model.UserDTO;
 import com.sivalabs.expensetracker.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static org.springframework.http.HttpStatus.CREATED;
 
@@ -35,63 +33,35 @@ public class UserController {
   }
 
   @GetMapping("")
-  public List<UserDTO> getUsers() {
+  public List<User> getUsers() {
     log.info("process=get-users");
-    List<User> allUsers = userService.getAllUsers();
-    return allUsers.stream().map(this::toDTO).collect(Collectors.toList());
+    return userService.getAllUsers();
   }
 
   @GetMapping("/{id}")
-  public ResponseEntity<UserDTO> getUser(@PathVariable Long id) {
+  public ResponseEntity<User> getUser(@PathVariable Long id) {
     log.info("process=get-user, user_id={}", id);
     Optional<User> user = userService.getUserById(id);
-    return user.map(u -> ResponseEntity.ok(toDTO(u))).orElse(ResponseEntity.notFound().build());
+    return user.map(u -> ResponseEntity.ok(u)).orElse(ResponseEntity.notFound().build());
   }
 
   @PostMapping("")
   @ResponseStatus(CREATED)
-  public UserDTO createUser(@RequestBody UserDTO user) {
+  public User createUser(@RequestBody User user) {
     log.info("process=create-user, user_email={}", user.getEmail());
-    return toDTO(userService.createUser(toEntity(user)));
+    return userService.createUser(user);
   }
 
   @PutMapping("/{id}")
-  public UserDTO updateUser(@PathVariable Long id, @RequestBody UserDTO userDTO) {
+  public User updateUser(@PathVariable Long id, @RequestBody User user) {
     log.info("process=update-user, user_id={}", id);
-    User user = toEntity(userDTO);
     user.setId(id);
-    return toDTO(userService.updateUser(user));
+    return userService.updateUser(user);
   }
 
   @DeleteMapping("/{id}")
   public void deleteUser(@PathVariable Long id) {
     log.info("process=delete-user, user_id={}", id);
     userService.deleteUser(id);
-  }
-
-  public UserDTO toDTO(User user) {
-    return UserDTO.builder()
-        .id(user.getId())
-        .name(user.getName())
-        .username(user.getUsername())
-        .password(user.getPassword())
-        .email(user.getEmail())
-        .enabled(user.isEnabled())
-        .lastPasswordResetDate(user.getLastPasswordResetDate())
-        .roles(user.getRoles())
-        .build();
-  }
-
-  public User toEntity(UserDTO dto) {
-    return User.builder()
-        .id(dto.getId())
-        .name(dto.getName())
-        .username(dto.getUsername())
-        .password(dto.getPassword())
-        .email(dto.getEmail())
-        .enabled(dto.isEnabled())
-        .lastPasswordResetDate(dto.getLastPasswordResetDate())
-        .roles(dto.getRoles())
-        .build();
   }
 }

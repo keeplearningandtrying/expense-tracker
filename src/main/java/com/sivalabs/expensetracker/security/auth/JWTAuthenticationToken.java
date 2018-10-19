@@ -5,13 +5,13 @@ import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 
 @EqualsAndHashCode
-public class TokenBasedAuthentication extends AbstractAuthenticationToken {
+public class JWTAuthenticationToken extends AbstractAuthenticationToken {
 
   private final UserDetails principle;
 
   private String token;
 
-  public TokenBasedAuthentication(String token, UserDetails principle) {
+  public JWTAuthenticationToken(String token, UserDetails principle) {
     super(principle.getAuthorities());
     this.token = token;
     this.principle = principle;

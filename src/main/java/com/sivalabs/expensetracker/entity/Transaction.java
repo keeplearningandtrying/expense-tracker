@@ -37,6 +37,7 @@ public class Transaction {
   @Enumerated(EnumType.STRING)
   private Type type;
 
+  @Builder.Default
   private LocalDate createdOn = LocalDate.now();
 
   @ManyToOne
