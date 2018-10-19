@@ -49,7 +49,7 @@ public class TransactionController {
   public ResponseEntity<Transaction> getTransaction(@PathVariable("id") Long id) {
     log.info("process=get-transaction, transaction_id={}", id);
     Optional<Transaction> transaction = transactionService.getTransactionById(id);
-    return transaction.map(u -> ResponseEntity.ok(u)).orElse(ResponseEntity.notFound().build());
+    return transaction.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
   }
 
   @PostMapping("")

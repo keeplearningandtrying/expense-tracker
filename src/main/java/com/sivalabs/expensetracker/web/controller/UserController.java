@@ -42,7 +42,7 @@ public class UserController {
   public ResponseEntity<User> getUser(@PathVariable Long id) {
     log.info("process=get-user, user_id={}", id);
     Optional<User> user = userService.getUserById(id);
-    return user.map(u -> ResponseEntity.ok(u)).orElse(ResponseEntity.notFound().build());
+    return user.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
   }
 
   @PostMapping("")
